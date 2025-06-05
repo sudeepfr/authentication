@@ -3,18 +3,19 @@ import AboutPage from "./pages/AboutPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Home from "./pages/Home";
+import Header from "./components/header";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
       <BrowserRouter>
-      <h1> Hello man!!</h1>
+       <Header/>
        <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/SignIn" element={<SignInPage/>}/>
-      <Route path="/SignIn" element={<SignUpPage/>}/>
-      <Route path="/SignUp" element={ <AboutPage/>}/>
-       </Routes>
+      <Route path="/SignUp" element={<SignUpPage/>}/>
+      <Route path="/About" element={ <AboutPage/>}/>
+        </Routes>
       </BrowserRouter>
      
      
