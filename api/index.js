@@ -1,10 +1,13 @@
-const userRouter= require('./routes/user.route.js');
 const express = require('express');
-const mongoose =require('mongoose');
-const dotenv=require('dotenv');
 const app=express();
+app.use(express.json());
+const mongoose =require('mongoose');
+const userRouter= require('./routes/user.route.js');
+const authRouter=require('./routes/auth.route.js');
 
-dotenv.config();
+const dotenv=require('dotenv');
+// express.use()
+dotenv.config();   
 
 console.log(process.env.MONGO);
 mongoose.connect(process.env.MONGO).then(()=>{
@@ -13,7 +16,8 @@ mongoose.connect(process.env.MONGO).then(()=>{
     console.log(err); 
 }); 
 
-app.use('/',userRouter);
+app.use('/user',userRouter);
+app.use('/signUp',authRouter);
 
 
 app.listen(3000,()=>{
