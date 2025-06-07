@@ -9,7 +9,7 @@ import { Link} from "react-router-dom";
           <ul  className="flex justify-between " >
 
            <Link to='/'> <li className='m-4'>Home</li> </Link>
-        L  <Link to='/SignIn'>  <li className='m-4'>signIn</li></Link>
+           <Link to='/SignIn'>  <li className='m-4'>signIn</li></Link>
            <Link to='/SignUp'>  <li className='m-4'>signUp</li></Link>
            <Link to='/About'>   <li className='m-4' >About</li></Link>
 
