@@ -19,6 +19,16 @@ mongoose.connect(process.env.MONGO).then(()=>{
 app.use('/user',userRouter);
 app.use('/signUp',authRouter);
 
+app.use((err,req,res,next)=>{
+     const statusCode=err.statusCode || 500;
+     const message =err.message || 'internal server Error';
+
+     return res.status(statusCode).json({
+         success:false,
+         error:message,
+         statusCode:statusCode,
+     })
+})
 
 app.listen(3000,()=>{
      console.log("server started at port 3000!");

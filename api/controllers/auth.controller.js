@@ -1,6 +1,6 @@
 const {User} = require("../model/user.model.js");
 
-const signUp = async (req, res) => {
+const signUp = async (req, res,next ) => {
     try{
 
         console.log(req.body);
@@ -15,7 +15,8 @@ const signUp = async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: "user successfully created" });
     }catch(err){
-        res.status(500).json({messsage:"user not created"});
+        // res.status(500).json({messsage:"user not created"});
+       next(err);
     }
 
 };
