@@ -17,7 +17,7 @@ import { Link } from "react-router-dom"; function SignUpPage() {
          <div className='flex gap-2 mt-5'>
 
          <p>Have an account?</p>
-         <Link to='/SignIn'> <span  className='text-blue-500'> sign in</span></Link>
+         <Link to='/SignIn  '> <span  className='text-blue-500'> sign in</span></Link>
          </div>
       </div>
    )
