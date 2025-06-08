@@ -1,15 +1,24 @@
 const express = require('express');
-const app=express();
-app.use(express.json());
 const mongoose =require('mongoose');
 const userRouter= require('./routes/user.route.js');
 const authRouter=require('./routes/auth.route.js');
-
+const cors = require('cors'); 
 const dotenv=require('dotenv');
-// express.use()
 dotenv.config();   
+const app=express();
+app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));  
+
+
+
+// express.use()
 
 console.log(process.env.MONGO);
+
 mongoose.connect(process.env.MONGO).then(()=>{
      console.log("connected successfully ")
 }).catch((err)=>{
