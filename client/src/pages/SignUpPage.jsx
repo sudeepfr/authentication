@@ -30,7 +30,7 @@ function SignUpPage() {
           } 
           if(data.message){
              setSuccess(true);
-          }
+          }  
       
        
    };
