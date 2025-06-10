@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 function SignUpPage() {
 
    const [formData, setFormData] = useState({});
    const [isLoading, setLoading] = useState(false);
    const [err,setErr]=useState(false);
    const [success,setSuccess]=useState(false);
+   const  navigate=useNavigate();
    const handleOnChange = (e) => {
       setFormData({ ...formData, [e.target.id]: e.target.value })  //e.target.id--->username and e.target.value-->value 
    }
@@ -15,7 +16,7 @@ function SignUpPage() {
          e.preventDefault();
          setLoading(true);
    
-         const res = await fetch('http://localhost:3000/signUp', {
+         const res = await fetch('http://localhost:3000/api/auth/signUp', {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json',
@@ -31,8 +32,8 @@ function SignUpPage() {
           if(data.message){
              setSuccess(true);
           }
-      
        
+       navigate('/SignIn'); // redirect to sign in page after successful signup
    };
 
 

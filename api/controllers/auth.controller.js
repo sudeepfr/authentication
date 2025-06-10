@@ -2,6 +2,7 @@ const { User } = require("../model/user.model.js");
 const { errorHandler } = require("../utils/error.js");
 const jwt = require('jsonwebtoken');
 const dotenv=require('dotenv');
+const bcrypt = require("bcryptjs");
 dotenv.config();  
 
 const signUp = async (req, res, next) => {
@@ -9,11 +10,12 @@ const signUp = async (req, res, next) => {
 
         console.log(req.body);
         const { username, email, password } = req.body;
-
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             username: username,
             email: email,
-            password: password,
+            password: hashedPassword,
         });
 
         await newUser.save();
@@ -32,7 +34,10 @@ const signIn = async (req, res, next) => {
 
         const validUser = await User.findOne({ email: email });// will get the user with valid email 
         if (!validUser) return next(errorHandler(404, "invalid user"));
-        if (validUser.password!==password) return next(errorHandler(401, "Invalid password"));
+
+         const isPasswordCorrect = await bcrypt.compare(password, validUser.password);
+        if (!isPasswordCorrect) return next(errorHandler(401, "Invalid password"));
+
         // after successsfull login .issue the Jwt token =
         //Jwt authentication 
         const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
