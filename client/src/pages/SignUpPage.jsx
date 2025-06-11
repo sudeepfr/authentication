@@ -61,4 +61,5 @@ function SignUpPage() {
       </div>
    )
 }
+
 export default SignUpPage;

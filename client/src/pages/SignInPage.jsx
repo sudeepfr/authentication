@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Link ,useNavigate} from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+
 function SignInPage() {
 
    const [formData, setFormData] = useState({});
-   const [isLoading, setLoading] = useState(false);
-   const [err,setErr]=useState(false);
-   const [success,setSuccess]=useState(false);
+  //  const [isLoading, setLoading] = useState(false);
+  //  const [err,setErr]=useState(false);
+  // const [success,setSuccess]=useState(false);
+
+    const {error,loading,success}=useSelector((state)=>state.user);
+
    const navigate=useNavigate();
+   const dispatch=useDispatch();
+
    const handleOnChange = (e) => {
       setFormData({ ...formData, [e.target.id]: e.target.value })  //e.target.id--->username and e.target.value-->value 
    }
@@ -14,9 +22,11 @@ function SignInPage() {
    const handleOnSubmit = async (e) => {
       
          e.preventDefault();
-         setLoading(true);
-   
-         const res = await fetch('http://localhost:3000/api/auth/signIn', {
+        //  setLoading(true);
+         dispatch(signInStart);
+
+       try { 
+        const res = await fetch('http://localhost:3000/api/auth/signIn', {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -24,16 +34,24 @@ function SignInPage() {
             },
             body: JSON.stringify(formData),
          });
+         
          const data = await res.json();
          
-         setLoading(false);
+        //  setLoading(false);
+          dispatch(signInSuccess(data));
+
           if(data.success===false ){
-             setErr(true);
+            //  setErr(true);
+            dispatch(signInFailure())
           } 
           if(data.message){
-             setSuccess(true);
+            //  setSuccess(true);
+            dispatch(signInSuccess());
+            navigate('/'); // redirect to home page after successful login
           }
-        navigate('/'); // redirect to home page after successful login
+      } catch(err){
+          dispatch(signInFailure(err));
+      }
        
    };
 
@@ -48,13 +66,13 @@ function SignInPage() {
             <input type="password"
                placeholder='password' id='password' className="bg-slate-100 rounded-lg " onChange={handleOnChange}></input>
 
-            <button className={`bg-slate-700  text-white p-3 rounded-lg uppercase ${isLoading ? 'bg-indigo-500 opacity-25' : 'bg-indigo-500 opacity-100 ...'} `} disabled={isLoading}> {isLoading ? "signing in..." : "sign in"}</button>
+            <button className={`bg-slate-700  text-white p-3 rounded-lg uppercase ${loading? 'bg-indigo-500 opacity-25' : 'bg-indigo-500 opacity-100 ...'} `} disabled={loading}> {loading ? "signing in..." : "sign in"}</button>
          </form>
          <div className='flex gap-2 mt-5'>
 
             <p>Do not have an account?</p>
             <Link to='/SignUp  '> <span className='text-blue-500'> sign up</span></Link>
-             {err?<p className='text-red-800'>Please change your username and email </p>:" "}
+             {error?<p className='text-red-800'>Please change your username and email </p>:" "}
              {success?<p>account created successfully</p>:" "}
          </div>
       </div>
