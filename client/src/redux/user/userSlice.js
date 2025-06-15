@@ -14,6 +14,8 @@ const userSlice=createSlice({
      reducers:{
           signInStart:(state)=>{
              state.loading=true;
+             state.error=false;
+            state.success=false;
           },
           signInSuccess:(state,action)=>{
             state.currentUser=action.payload,

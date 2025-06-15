@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Link ,useNavigate} from "react-router-dom";
+import OAuth from '../components/oAuth';
+import { useSelector, useDispatch } from 'react-redux';
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+
 function SignUpPage() {
+  
 
    const [formData, setFormData] = useState({});
-   const [isLoading, setLoading] = useState(false);
-   const [err,setErr]=useState(false);
-   const [success,setSuccess]=useState(false);
+   // const [isLoading, setLoading] = useState(false);
+   // const [err,setErr]=useState(false);
+   // const [success,setSuccess]=useState(false);
+
    const  navigate=useNavigate();
+   const dispatch=useDispatch();
+   const {error,loading,success}=useSelector((state)=>state.user);
+    
    const handleOnChange = (e) => {
       setFormData({ ...formData, [e.target.id]: e.target.value })  //e.target.id--->username and e.target.value-->value 
    }
@@ -14,9 +23,10 @@ function SignUpPage() {
    const handleOnSubmit = async (e) => {
       
          e.preventDefault();
-         setLoading(true);
+         // setLoading(true);
+         dispatch(signInStart());
    
-         const res = await fetch('http://localhost:3000/api/auth/signUp', {
+         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signUp`, {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json',
@@ -24,16 +34,15 @@ function SignUpPage() {
             body: JSON.stringify(formData),
          });
          const data = await res.json();
-         console.log(data);
-         setLoading(false);
+      
           if(data.success===false ){
-             setErr(true);
-          } 
-          if(data.message){
-             setSuccess(true);
+            dispatch(signInFailure(data.message )) // dispatching error message to userSlice
+            // setErr(true);
+          } else{
+            dispatch(signInSuccess(data)); // dispatching user data to userSlice
+            navigate('/SignIn'); // redirect to sign in page after successful signup
           }
        
-       navigate('/SignIn'); // redirect to sign in page after successful signup
    };
 
 
@@ -49,13 +58,14 @@ function SignUpPage() {
             <input type="password"
                placeholder='password' id='password' className="bg-slate-100 rounded-lg " onChange={handleOnChange}></input>
 
-            <button className={`bg-slate-700  text-white p-3 rounded-lg uppercase ${isLoading ? 'bg-indigo-500 opacity-25' : 'bg-indigo-500 opacity-100 ...'} `} disabled={isLoading}> {isLoading ? "signing up..." : "sign up"}</button>
+            <button className={`bg-slate-700  text-white p-3 rounded-lg uppercase ${loading ? 'bg-indigo-500 opacity-25' : 'bg-indigo-500 opacity-100 ...'} `} disabled={loading}> {loading ? "signing up..." : "sign up"}</button>
+            <OAuth></OAuth>
          </form>
          <div className='flex gap-2 mt-5'>
 
             <p>Have an account?</p>
             <Link to='/SignIn  '> <span className='text-blue-500'> sign in</span></Link>
-             {err?<p className='text-red-800'>Please change your username and email </p>:" "}
+             {error?<p className='text-red-800'>Please change your username and email </p>:" "}
              {success?<p>account created successfully</p>:" "}
          </div>
       </div>
